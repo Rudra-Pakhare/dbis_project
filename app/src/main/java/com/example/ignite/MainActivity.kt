@@ -10,6 +10,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.ignite.screens.home.HomeScreen
+import com.example.ignite.screens.login.LoginScreen
+import com.example.ignite.screens.profile.ProfileScreen
+import com.example.ignite.screens.signup.SignUpScreen
 import com.example.ignite.ui.theme.IGNITETheme
 
 class MainActivity : ComponentActivity() {
@@ -18,26 +26,35 @@ class MainActivity : ComponentActivity() {
         setContent {
             IGNITETheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
+                IgniteApp(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
-                }
+                    navController = rememberNavController(),
+                    startDestination = IgniteRoutes.LoginScreen.route
+                )
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    IGNITETheme {
-        Greeting("Android")
+fun IgniteApp(
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
+    startDestination: String = IgniteRoutes.LoginScreen.route
+){
+    NavHost(navController = navController, startDestination = startDestination){
+        composable(route = IgniteRoutes.LoginScreen.route){
+            LoginScreen(navController = navController)
+        }
+        composable(route = IgniteRoutes.SignUpScreen.route){
+            SignUpScreen(navController = navController)
+        }
+        composable(route = IgniteRoutes.ProfileScreen.route){
+            ProfileScreen(navController = navController)
+        }
+        composable(route = IgniteRoutes.HomeScreen.route){
+            HomeScreen(navController = navController)
+        }
     }
 }
+
