@@ -2,19 +2,19 @@ package com.example.ignite
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,8 +23,10 @@ import com.example.ignite.screens.home.HomeScreen
 import com.example.ignite.screens.login.LoginScreen
 import com.example.ignite.screens.profile.ProfileScreen
 import com.example.ignite.screens.signup.SignUpScreen
+import com.example.ignite.screens.snackbar.SnackbarManager
 import com.example.ignite.ui.theme.IGNITETheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -37,7 +39,7 @@ class MainActivity : ComponentActivity() {
                 IgniteApp(
                     modifier = Modifier.fillMaxSize(),
                     navController = rememberNavController(),
-                    startDestination = IgniteRoutes.LoginScreen.route
+                    startDestination = IgniteRoutes.SignUpScreen.route
                 )
             }
         }
@@ -48,31 +50,56 @@ class MainActivity : ComponentActivity() {
 fun IgniteApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = IgniteRoutes.LoginScreen.route
+    startDestination: String = IgniteRoutes.SignUpScreen.route
 ){
     val appState = rememberAppState(navController)
 
-    NavHost(navController = navController, startDestination = startDestination){
-        composable(route = IgniteRoutes.LoginScreen.route){
-            LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
-        }
-        composable(route = IgniteRoutes.SignUpScreen.route){
-            SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
-        }
-        composable(route = IgniteRoutes.ProfileScreen.route){
-            ProfileScreen(navController = navController)
-        }
-        composable(route = IgniteRoutes.HomeScreen.route){
-            HomeScreen(navController = navController)
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = it,
+                modifier = Modifier.padding(8.dp),
+                snackbar = { snackbarData ->
+                    Snackbar(snackbarData, contentColor = MaterialTheme.colors.onPrimary)
+                }
+            )
+        },
+        scaffoldState = appState.scaffoldState
+    ){
+        paddingValues ->
+        NavHost(navController = navController, startDestination = startDestination){
+            composable(route = IgniteRoutes.LoginScreen.route){
+                LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+            }
+            composable(route = IgniteRoutes.SignUpScreen.route){
+                SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+            }
+            composable(route = IgniteRoutes.ProfileScreen.route){
+                ProfileScreen(navController = navController)
+            }
+            composable(route = IgniteRoutes.HomeScreen.route){
+                HomeScreen(navController = navController)
+            }
         }
     }
 }
 
 @Composable
+@ReadOnlyComposable
+fun resources(): Resources {
+    LocalConfiguration.current
+    return LocalContext.current.resources
+}
+
+@Composable
 fun rememberAppState(
-    navController: NavHostController
+    navController: NavHostController,
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    snackbarManager: SnackbarManager = SnackbarManager,
+    resources: Resources = resources()
 ) =
-    remember(navController) {
-        IgniteState(navController)
+    remember(navController,scaffoldState,coroutineScope,snackbarManager,resources) {
+        IgniteState(navController,scaffoldState,coroutineScope,snackbarManager,resources)
     }
 

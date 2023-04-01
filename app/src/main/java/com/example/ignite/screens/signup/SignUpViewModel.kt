@@ -1,10 +1,14 @@
 package com.example.ignite.screens.signup
 
+import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.ignite.IgniteRoutes
+import com.example.ignite.screens.snackbar.SnackbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.regex.Pattern
 import javax.inject.Inject
+import com.example.ignite.R.string as AppText
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor() : ViewModel() {
@@ -38,6 +42,21 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     }
 
     fun onSignInClick(openAndPopUp: (String, String) -> Unit) {
+        if (!email.isValidEmail()) {
+            SnackbarManager.showMessage(AppText.email_error)
+            return
+        }
+
+        if (!password.isValidPassword()) {
+            SnackbarManager.showMessage(AppText.password_error)
+            return
+        }
+
+        if (!password.passwordMatches(uiState.value.repeatPassword)) {
+            SnackbarManager.showMessage(AppText.password_match_error)
+            return
+        }
+
         openAndPopUp(IgniteRoutes.HomeScreen.route, IgniteRoutes.SignUpScreen.route)
     }
 
@@ -55,3 +74,20 @@ data class SignUpData(
     val name: String = "",
     val repeatPassword: String = ""
 )
+
+private const val MIN_PASS_LENGTH = 6
+private const val PASS_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4,}$"
+
+fun String.isValidEmail(): Boolean {
+    return this.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
+
+fun String.isValidPassword(): Boolean {
+    return this.isNotBlank() &&
+            this.length >= MIN_PASS_LENGTH &&
+            Pattern.compile(PASS_PATTERN).matcher(this).matches()
+}
+
+fun String.passwordMatches(repeated: String): Boolean {
+    return this == repeated
+}
