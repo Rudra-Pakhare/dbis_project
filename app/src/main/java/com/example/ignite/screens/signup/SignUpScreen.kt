@@ -3,21 +3,36 @@ package com.example.ignite.screens.signup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ignite.IgniteRoutes
+import com.example.ignite.R
+import com.example.ignite.screens.login.LoginViewModel
 
 @Composable
-fun SignUpScreen(navController: NavController){
+fun SignUpScreen(
+    navController: NavController,
+    viewModel: SignUpViewModel = hiltViewModel()
+){
+    val uiState by viewModel.uiState
+
+    var passwordVisibility by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,39 +68,48 @@ fun SignUpScreen(navController: NavController){
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = uiState.name,
+                    onValueChange = { viewModel.onNameChange(it) },
                     placeholder = { Text("Name") },
                     shape = RoundedCornerShape(20),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                         .height(60.dp),
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0x66E8E8E8))
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0x66E8E8E8),focusedIndicatorColor = Color.Gray, cursorColor = Color.Gray )
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = uiState.email,
+                    onValueChange = { viewModel.onEmailChange(it) },
                     placeholder = { Text("Email") },
                     shape = RoundedCornerShape(20),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                         .height(60.dp),
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0x66E8E8E8))
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0x66E8E8E8),focusedIndicatorColor = Color.Gray, cursorColor = Color.Gray )
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = uiState.password,
+                    onValueChange = { viewModel.onPasswordChange(it) },
                     placeholder = { Text("Password") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            passwordVisibility = !passwordVisibility
+                        }) {
+                            Icon(painter = painterResource(id = R.drawable.baseline_remove_red_eye_24),"")
+                        }
+                    },
                     shape = RoundedCornerShape(20),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                         .height(60.dp),
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0x66E8E8E8))
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0x66E8E8E8),focusedIndicatorColor = Color.Gray, cursorColor = Color.Gray )
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
