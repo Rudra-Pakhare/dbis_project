@@ -12,8 +12,7 @@ class IgniteState(private val navController: NavHostController) {
     }
 
     fun navigateAndPopUp(route: String, popUp: String) {
-        navController.navigate(route) {
-            launchSingleTop = true
+        navController.navigate(route = route) {
             popUpTo(popUp) { inclusive = true }
         }
     }

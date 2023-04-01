@@ -26,7 +26,7 @@ import com.example.ignite.screens.login.LoginViewModel
 
 @Composable
 fun SignUpScreen(
-    navController: NavController,
+    openAndPopUp: (String, String) -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ){
     val uiState by viewModel.uiState
@@ -60,7 +60,7 @@ fun SignUpScreen(
                     )
                     Text(
                         text = "Login",
-                        Modifier.clickable { navController.navigate(IgniteRoutes.LoginScreen.route) }.padding(end = 10.dp),
+                        Modifier.clickable { viewModel.onLoginClick(openAndPopUp) }.padding(end = 10.dp),
                         fontSize = 20.sp,
                         color = Color(0xFF5DB075),
                         fontWeight = FontWeight.SemiBold
@@ -112,8 +112,29 @@ fun SignUpScreen(
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0x66E8E8E8),focusedIndicatorColor = Color.Gray, cursorColor = Color.Gray )
                 )
                 Spacer(modifier = Modifier.height(20.dp))
+                OutlinedTextField(
+                    value = uiState.repeatPassword,
+                    onValueChange = { viewModel.onRepeatPasswordChange(it) },
+                    placeholder = { Text("Repeat Password") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            passwordVisibility = !passwordVisibility
+                        }) {
+                            Icon(painter = painterResource(id = R.drawable.baseline_remove_red_eye_24),"")
+                        }
+                    },
+                    shape = RoundedCornerShape(20),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                        .height(60.dp),
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0x66E8E8E8),focusedIndicatorColor = Color.Gray, cursorColor = Color.Gray )
+                )
+                Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = { navController.navigate(IgniteRoutes.HomeScreen.route) },
+                    onClick = { viewModel.onSignInClick(openAndPopUp) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
@@ -130,7 +151,7 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "Forgot your password?",
-                    Modifier.clickable {  },
+                    Modifier.clickable { viewModel.onForgotPasswordClick() },
                     fontSize = 20.sp,
                     color = Color(0xFF5DB075),
                     fontWeight = FontWeight.SemiBold
@@ -143,5 +164,5 @@ fun SignUpScreen(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreView(){
-    SignUpScreen(navController = rememberNavController())
+    SignUpScreen(openAndPopUp = { route, popUp ->  })
 }

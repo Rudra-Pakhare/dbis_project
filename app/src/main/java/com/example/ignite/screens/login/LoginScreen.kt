@@ -25,7 +25,7 @@ import com.example.ignite.R
 
 @Composable
 fun LoginScreen(
-    navController: NavController,
+    openAndPopUp: (String, String) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ){
     val uiState by viewModel.uiState
@@ -86,7 +86,7 @@ fun LoginScreen(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = { navController.navigate(IgniteRoutes.HomeScreen.route) },
+                    onClick = { viewModel.onLoginClick(openAndPopUp) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
@@ -103,7 +103,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "Forgot your password?",
-                    Modifier.clickable {  },
+                    Modifier.clickable { viewModel.onForgotPasswordClick() },
                     fontSize = 20.sp,
                     color = Color(0xFF5DB075),
                     fontWeight = FontWeight.SemiBold
@@ -116,5 +116,5 @@ fun LoginScreen(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreView(){
-    LoginScreen(navController = rememberNavController())
+    LoginScreen(openAndPopUp = { route, popUp ->  })
 }

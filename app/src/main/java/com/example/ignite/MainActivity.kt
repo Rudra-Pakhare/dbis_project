@@ -10,6 +10,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -47,12 +50,14 @@ fun IgniteApp(
     navController: NavHostController = rememberNavController(),
     startDestination: String = IgniteRoutes.LoginScreen.route
 ){
+    val appState = rememberAppState(navController)
+
     NavHost(navController = navController, startDestination = startDestination){
         composable(route = IgniteRoutes.LoginScreen.route){
-            LoginScreen(navController = navController)
+            LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
         }
         composable(route = IgniteRoutes.SignUpScreen.route){
-            SignUpScreen(navController = navController)
+            SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
         }
         composable(route = IgniteRoutes.ProfileScreen.route){
             ProfileScreen(navController = navController)
@@ -62,4 +67,12 @@ fun IgniteApp(
         }
     }
 }
+
+@Composable
+fun rememberAppState(
+    navController: NavHostController
+) =
+    remember(navController) {
+        IgniteState(navController)
+    }
 

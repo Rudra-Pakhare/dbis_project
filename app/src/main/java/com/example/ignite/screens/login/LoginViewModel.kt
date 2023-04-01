@@ -1,7 +1,9 @@
 package com.example.ignite.screens.login
 
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.ignite.IgniteRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -22,6 +24,13 @@ class LoginViewModel @Inject constructor() : ViewModel() {
 
     fun onPasswordChange(newValue: String) {
         uiState.value = uiState.value.copy(password = newValue)
+    }
+
+    fun onLoginClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp(IgniteRoutes.HomeScreen.route,IgniteRoutes.LoginScreen.route)
+    }
+
+    fun onForgotPasswordClick() {
     }
 }
 
