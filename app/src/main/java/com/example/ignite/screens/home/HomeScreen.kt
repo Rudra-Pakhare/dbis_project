@@ -22,15 +22,11 @@ fun HomeScreen(navController: NavController){
         Text(text = "Home Screen", fontSize = 40.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(30.dp))
-        Text(text = "to signup",
-            Modifier.clickable { navController.navigate(IgniteRoutes.SignUpScreen.route) },
-            fontSize = 20.sp
-        )
         Text(text = "to profile",
             Modifier.clickable { navController.navigate(IgniteRoutes.ProfileScreen.route) },
             fontSize = 20.sp
         )
-        Text(text = "to login",
+        Text(text = "to logout",
             Modifier.clickable { navController.navigate(IgniteRoutes.LoginScreen.route) },
             fontSize = 20.sp
         )

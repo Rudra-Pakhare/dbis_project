@@ -46,11 +46,25 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "Log In",
-                    fontSize = 40.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Text(
+                        text = "Log In",
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(start = 125.dp)
+                    )
+                    Text(
+                        text = "Signup",
+                        Modifier.clickable { viewModel.onSignupClick(openAndPopUp) }.padding(end = 10.dp),
+                        fontSize = 20.sp,
+                        color = Color(0xFF5DB075),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
                 Spacer(modifier = Modifier.height(30.dp))
                 OutlinedTextField(
                     value =  uiState.email,

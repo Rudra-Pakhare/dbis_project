@@ -29,6 +29,10 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         uiState.value = uiState.value.copy(password = newValue)
     }
 
+    fun onSignupClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp(IgniteRoutes.SignUpScreen.route,IgniteRoutes.LoginScreen.route)
+    }
+
     fun onLoginClick(openAndPopUp: (String, String) -> Unit) {
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(AppText.email_error)
