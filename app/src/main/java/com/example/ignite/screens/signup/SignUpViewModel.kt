@@ -4,6 +4,9 @@ import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.ignite.IgniteRoutes
+import com.example.ignite.IgniteViewModel
+import com.example.ignite.models.service.AccountService
+import com.example.ignite.models.service.LogService
 import com.example.ignite.screens.snackbar.SnackbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.regex.Pattern
@@ -11,7 +14,10 @@ import javax.inject.Inject
 import com.example.ignite.R.string as AppText
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor() : ViewModel() {
+class SignUpViewModel @Inject constructor(
+    private val accountService: AccountService,
+    logService: LogService
+) : IgniteViewModel(logService) {
 
     var uiState = mutableStateOf(SignUpData())
         private set
@@ -57,7 +63,10 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
             return
         }
 
-        openAndPopUp(IgniteRoutes.HomeScreen.route, IgniteRoutes.SignUpScreen.route)
+        launchCatching {
+            accountService.signIn(uiState.value.email,uiState.value.password)
+            openAndPopUp(IgniteRoutes.HomeScreen.route, IgniteRoutes.SignUpScreen.route)
+        }
     }
 
     fun onLoginClick(openAndPopUp: (String, String) -> Unit) {

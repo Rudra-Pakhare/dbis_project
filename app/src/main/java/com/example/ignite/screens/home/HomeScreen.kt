@@ -9,11 +9,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ignite.IgniteRoutes
+import com.example.ignite.screens.login.LoginViewModel
 
 @Composable
-fun HomeScreen(navController: NavController){
+fun HomeScreen(
+    navController: NavController,
+    openAndPopUp: (String, String) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
+){
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -27,7 +33,7 @@ fun HomeScreen(navController: NavController){
             fontSize = 20.sp
         )
         Text(text = "to logout",
-            Modifier.clickable { navController.navigate(IgniteRoutes.LoginScreen.route) },
+            Modifier.clickable { viewModel.onLogoutClick(openAndPopUp) },
             fontSize = 20.sp
         )
     }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "230719357331",
+    "project_id": "ignite-authentication",
+    "storage_bucket": "ignite-authentication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230719357331:android:c9378825a88fa445846866",
+        "android_client_info": {
+          "package_name": "com.example.ignite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "230719357331-it3hdv91knvna5ubgqqgree53u6kivo4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwav0VOBawUXvcqrrLvmrnZ1zYmWhMBBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "230719357331-it3hdv91knvna5ubgqqgree53u6kivo4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

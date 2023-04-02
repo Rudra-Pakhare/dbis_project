@@ -26,9 +26,5 @@ fun ProfileScreen(navController: NavController){
             Modifier.clickable { navController.navigate(IgniteRoutes.HomeScreen.route) },
             fontSize = 20.sp
         )
-        Text(text = "to logout",
-            Modifier.clickable { navController.navigate(IgniteRoutes.LoginScreen.route) },
-            fontSize = 20.sp
-        )
     }
 }

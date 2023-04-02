@@ -2,8 +2,10 @@ package com.example.ignite.screens.login
 
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import com.example.ignite.IgniteRoutes
+import com.example.ignite.IgniteViewModel
+import com.example.ignite.models.service.AccountService
+import com.example.ignite.models.service.LogService
 import com.example.ignite.screens.snackbar.SnackbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.regex.Pattern
@@ -11,7 +13,10 @@ import javax.inject.Inject
 import com.example.ignite.R.string as AppText
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val accountService: AccountService,
+    logService: LogService
+) : IgniteViewModel(logService) {
 
     var uiState = mutableStateOf(LoginData())
         private set
@@ -43,7 +48,10 @@ class LoginViewModel @Inject constructor() : ViewModel() {
             SnackbarManager.showMessage(AppText.empty_password_error)
             return
         }
-        openAndPopUp(IgniteRoutes.HomeScreen.route,IgniteRoutes.LoginScreen.route)
+        launchCatching {
+            accountService.authenticate(email, password)
+            openAndPopUp(IgniteRoutes.HomeScreen.route, IgniteRoutes.LoginScreen.route)
+        }
     }
 
     fun onForgotPasswordClick() {
