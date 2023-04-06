@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                 IgniteApp(
                     modifier = Modifier.fillMaxSize(),
                     navController = rememberNavController(),
-                    startDestination = IgniteRoutes.SignUpScreen.route
+                    startDestination = IgniteRoutes.HomeScreen.route
                 )
             }
         }
@@ -66,7 +66,7 @@ fun IgniteApp(
         },
         scaffoldState = appState.scaffoldState
     ){
-        paddingValues ->
+        _ ->
         NavHost(navController = navController, startDestination = startDestination){
             composable(route = IgniteRoutes.LoginScreen.route){
                 LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
@@ -78,7 +78,7 @@ fun IgniteApp(
                 ProfileScreen(navController = navController)
             }
             composable(route = IgniteRoutes.HomeScreen.route){
-                HomeScreen(navController = navController, openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+                HomeScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
             }
         }
     }
