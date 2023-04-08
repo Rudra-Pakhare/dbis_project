@@ -1,4 +1,4 @@
-package com.example.ignite.screens.Exercises
+package com.example.ignite.screens.exercises
 
 
 import androidx.compose.foundation.layout.*
@@ -12,10 +12,12 @@ import android.os.Build.VERSION.SDK_INT
 import androidx.compose.material.Text
 import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import coil.size.Size
+import com.example.ignite.R.drawable as AppImages
 
 
 @Composable
@@ -32,14 +34,13 @@ private fun Greeting(name: String) {
         .build()
 
     Image(
-        painter = rememberAsyncImagePainter(model = "https://compote.slate.com/images/697b023b-64a5-49a0-8059-27b963453fb1.gif?crop=780%2C520%2Cx0%2Cy0&width=1280", imageLoader),
+        painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(context).data(data = AppImages.abs).apply(block = {
+                size(Size.ORIGINAL)
+            }).build() , imageLoader),
         contentDescription = null,
         modifier = Modifier.fillMaxSize()
     )
-//    AsyncImage(
-//        model = "https://cdn.mos.cms.futurecdn.net/4AZaC73zUNFBsAGiuaK9E9-970-80.jpeg.webp",
-//        contentDescription = "Translated description of what the image contains"
-//    )
         Text(text = "Hello $name!", modifier = Modifier.padding(24.dp))
 }
 

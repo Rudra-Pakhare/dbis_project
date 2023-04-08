@@ -1,6 +1,5 @@
 package com.example.ignite
 
-import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Resources
 import android.os.Bundle
@@ -13,13 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.ignite.screens.Exercises.ExercisesScreen
+import com.example.ignite.screens.exercises.ExercisesScreen
 import com.example.ignite.screens.home.HomeScreen
 import com.example.ignite.screens.login.LoginScreen
 import com.example.ignite.screens.profile.ProfileScreen
