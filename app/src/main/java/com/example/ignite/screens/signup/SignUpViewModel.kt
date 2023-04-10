@@ -48,6 +48,10 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun onSignInClick(openAndPopUp: (String, String) -> Unit) {
+        if(!name.isNotBlank()){
+            SnackbarManager.showMessage(AppText.name_error)
+            return
+        }
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(AppText.email_error)
             return
@@ -64,7 +68,7 @@ class SignUpViewModel @Inject constructor(
         }
 
         launchCatching {
-            accountService.signIn(uiState.value.email,uiState.value.password)
+            accountService.signIn(uiState.value.name,uiState.value.email,uiState.value.password)
             openAndPopUp(IgniteRoutes.HomeScreen.route, IgniteRoutes.SignUpScreen.route)
         }
     }
