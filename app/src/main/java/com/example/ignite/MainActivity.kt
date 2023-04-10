@@ -75,7 +75,7 @@ fun IgniteApp(
                 SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
             }
             composable(route = IgniteRoutes.ProfileScreen.route){
-                ProfileScreen(navController = navController)
+                ProfileScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
             }
             composable(route = IgniteRoutes.HomeScreen.route){
                 HomeScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
