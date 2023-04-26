@@ -1,6 +1,6 @@
 package com.example.ignite
 
-import android.app.Activity
+
 import android.content.pm.ActivityInfo
 import android.content.res.Resources
 import android.os.Bundle
@@ -13,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,6 +23,7 @@ import com.example.ignite.screens.login.LoginScreen
 import com.example.ignite.screens.profile.ProfileScreen
 import com.example.ignite.screens.signup.SignUpScreen
 import com.example.ignite.screens.snackbar.SnackbarManager
+import com.example.ignite.screens.training.TrainingScreen
 import com.example.ignite.ui.theme.IGNITETheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -75,10 +75,13 @@ fun IgniteApp(
                 SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
             }
             composable(route = IgniteRoutes.ProfileScreen.route){
-                ProfileScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+                ProfileScreen(appState = appState)
             }
             composable(route = IgniteRoutes.HomeScreen.route){
-                HomeScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+                HomeScreen(appState = appState)
+            }
+            composable(route = IgniteRoutes.TrainingScreen.route){
+                TrainingScreen(appState = appState)
             }
         }
     }
