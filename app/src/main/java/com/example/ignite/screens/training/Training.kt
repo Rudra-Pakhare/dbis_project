@@ -41,7 +41,7 @@ fun TrainingScreen(
     Scaffold (
         scaffoldState = scaffoldState,
         bottomBar = { MyBottomBar(appState = appState,1) },
-        topBar = { MyTopBar()}
+        topBar = { MyTopBar() }
     ) { _ ->
 
         Text(text = "Training Plans", fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp,top = 10.dp))

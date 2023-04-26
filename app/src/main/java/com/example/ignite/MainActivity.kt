@@ -17,7 +17,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.ignite.screens.exercises.ExercisesScreen
 import com.example.ignite.screens.home.HomeScreen
 import com.example.ignite.screens.login.LoginScreen
 import com.example.ignite.screens.profile.ProfileScreen
@@ -39,7 +38,7 @@ class MainActivity : ComponentActivity() {
                 IgniteApp(
                     modifier = Modifier.fillMaxSize(),
                     navController = rememberNavController(),
-                    startDestination = IgniteRoutes.ExercisesScreen.route
+                    startDestination = IgniteRoutes.HomeScreen.route
                 )
             }
         }
@@ -50,7 +49,7 @@ class MainActivity : ComponentActivity() {
 fun IgniteApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = IgniteRoutes.ExercisesScreen.route
+    startDestination: String
 ){
     val appState = rememberAppState(navController)
 
@@ -82,9 +81,6 @@ fun IgniteApp(
             }
             composable(route = IgniteRoutes.TrainingScreen.route){
                 TrainingScreen(appState = appState)
-            }
-            composable(route = IgniteRoutes.ExercisesScreen.route){
-                ExercisesScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
             }
         }
     }
