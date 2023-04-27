@@ -6,6 +6,7 @@ import com.example.ignite.IgniteViewModel
 import com.example.ignite.models.User
 import com.example.ignite.models.service.AccountService
 import com.example.ignite.models.service.LogService
+import com.example.ignite.repository.GeneralRepository
 import com.example.ignite.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -16,18 +17,22 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     val accountService: AccountService,
     logService: LogService,
-    private val userRepository: UserRepository
+    private val generalRepository: GeneralRepository
 ) : IgniteViewModel(logService){
+
+    val exerciseResponseLiveData get() = generalRepository.exerciseResponseLiveData
+
+    fun getExercises() {
+        launchCatching {
+            generalRepository.getExercises()
+        }
+    }
 
     fun onAppStart() {
         launchCatching {
             if (accountService.hasUser)
-            else {
-                accountService.createAnonymousAccount()
-                viewModelScope.launch {
-                    userRepository.registerUser(User(accountService.currentUserId))
-                }
-            }
+            else accountService.createAnonymousAccount()
+            getExercises()
         }
     }
 }

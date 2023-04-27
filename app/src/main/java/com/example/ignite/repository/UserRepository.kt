@@ -14,23 +14,4 @@ class UserRepository @Inject constructor(private val userApi: UserApi) {
     private val _userResponseLiveData = MutableLiveData<NetworkResult<String>>()
     val userResponseLiveData: LiveData<NetworkResult<String>>
         get() = _userResponseLiveData
-
-    suspend fun registerUser(userRequest: User) {
-        _userResponseLiveData.postValue(NetworkResult.Loading())
-        val response = userApi.signup(userRequest)
-        handleResponse(response)
-    }
-
-    private fun handleResponse(response: Response<String>) {
-        if (response.isSuccessful && response.body() != null) {
-            _userResponseLiveData.postValue(NetworkResult.Success(response.body()!!))
-        }
-        else if(response.errorBody()!=null){
-            val errorObj = JSONObject(response.errorBody()!!.charStream().readText())
-            _userResponseLiveData.postValue(NetworkResult.Error(errorObj.getString("message")))
-        }
-        else{
-            _userResponseLiveData.postValue(NetworkResult.Error("Something Went Wrong"))
-        }
-    }
 }

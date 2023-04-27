@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.ignite.screens.apitesting.ApiScreen
 import com.example.ignite.screens.home.HomeScreen
 import com.example.ignite.screens.login.LoginScreen
 import com.example.ignite.screens.profile.ProfileScreen
@@ -81,6 +82,9 @@ fun IgniteApp(
             }
             composable(route = IgniteRoutes.TrainingScreen.route){
                 TrainingScreen(appState = appState)
+            }
+            composable(route = IgniteRoutes.ApiScreen.route){
+                ApiScreen(appState = appState)
             }
         }
     }
