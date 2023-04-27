@@ -17,14 +17,22 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     val accountService: AccountService,
     logService: LogService,
-    private val generalRepository: GeneralRepository
+    private val generalRepository: GeneralRepository,
+    private val userRepository: UserRepository
 ) : IgniteViewModel(logService){
 
     val exerciseResponseLiveData get() = generalRepository.exerciseResponseLiveData
+    val exercisesResponseLiveData get() = generalRepository.exercisesResponseLiveData
 
-    fun getExercises() {
+    private fun getExercises() {
         launchCatching {
             generalRepository.getExercises()
+        }
+    }
+
+    fun onExerciseClick(exercise: String) {
+        launchCatching {
+            generalRepository.getExercise(exercise)
         }
     }
 

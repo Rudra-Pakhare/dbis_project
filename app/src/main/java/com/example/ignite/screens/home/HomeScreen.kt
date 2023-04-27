@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.ignite.IgniteRoutes
 import com.example.ignite.IgniteState
 import com.example.ignite.composables.bottombar.MyBottomBar
 import com.example.ignite.composables.topbar.MyTopBar
@@ -33,7 +34,7 @@ fun HomeScreen(
     scaffoldState : ScaffoldState = rememberScaffoldState()
 ){
     val user = viewModel.accountService.currentUser.collectAsState(initial = User())
-    val exercises by viewModel.exerciseResponseLiveData.observeAsState()
+    val exercises by viewModel.exercisesResponseLiveData.observeAsState()
     Scaffold (
         scaffoldState = scaffoldState,
         bottomBar = {MyBottomBar(appState = appState,0)},
@@ -45,7 +46,7 @@ fun HomeScreen(
                 .padding(start = 10.dp, bottom = 50.dp,top = 5.dp),
         ) {
             itemsIndexed(exercises?.data?.categories ?: listOf()) { index, exercise ->
-                ColumnItem(text = exercise, exerciseX = exercises?.data?.exercises?.get(index) ?: listOf())
+                ColumnItem(text = exercise, exerciseX = exercises?.data?.exercises?.get(index) ?: listOf(), idx = index, appState = appState)
             }
         }
     }
@@ -58,28 +59,31 @@ fun HomeScreen(
 @Composable
 fun ColumnItem(
     text: String,
-    exerciseX: List<ExerciseX>
+    exerciseX: List<String>,
+    idx : Int,
+    appState: IgniteState
 ){
     Text(text = text, fontSize = 30.sp, fontWeight = FontWeight.Bold)
     LazyRow {
-        items(exerciseX) { exercise ->
-            ExerciseCard(exercise = exercise)
+        itemsIndexed(exerciseX) { index, exercise ->
+            ExerciseCard(exercise = exercise, appState = appState)
         }
     }
 }
 
 @Composable
 fun ExerciseCard(
-    exercise : ExerciseX
+    exercise : String,
+    appState: IgniteState
 ) {
     Card(
         modifier = Modifier
             .width(200.dp)
             .height(200.dp)
             .padding(15.dp)
-            .clickable { },
+            .clickable { appState.navigate(IgniteRoutes.Exercise.route + "/"+exercise ) },
         elevation = 10.dp
     ) {
-        Text(text = exercise.title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Text(text = exercise, fontSize = 20.sp, fontWeight = FontWeight.Bold)
     }
 }

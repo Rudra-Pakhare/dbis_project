@@ -18,9 +18,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ignite.screens.apitesting.ApiScreen
+import com.example.ignite.screens.home.Exercise
 import com.example.ignite.screens.home.HomeScreen
 import com.example.ignite.screens.login.LoginScreen
+import com.example.ignite.screens.profile.PostForm
 import com.example.ignite.screens.profile.ProfileScreen
+import com.example.ignite.screens.profile.SubscriptionForm
 import com.example.ignite.screens.signup.SignUpScreen
 import com.example.ignite.screens.snackbar.SnackbarManager
 import com.example.ignite.screens.training.TrainingScreen
@@ -85,6 +88,15 @@ fun IgniteApp(
             }
             composable(route = IgniteRoutes.ApiScreen.route){
                 ApiScreen(appState = appState)
+            }
+            composable(route = IgniteRoutes.Exercise.route + "/{exercise}"){
+                Exercise(appState = appState, exercise = it.arguments?.getString("exercise") ?: "")
+            }
+            composable(route = IgniteRoutes.PostForm.route){
+                PostForm(appState = appState)
+            }
+            composable(route = IgniteRoutes.SubscriptionForm.route){
+                SubscriptionForm(appState = appState)
             }
         }
     }

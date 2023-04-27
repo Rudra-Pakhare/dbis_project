@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.NavigationRailItem
@@ -100,10 +102,10 @@ fun ProfileScreen(
                 }
             }
             if(tab==0 && !user.value.isAnonymous){
-                ShowPost(count = count){ count += 1 }
+                ShowPost(count = count, viewModel = viewModel){ appState.navigate(IgniteRoutes.PostForm.route) }
             }
             else if(tab==1){
-                ShowSubscription(count = count){ count += 1 }
+                ShowSubscription(count = count, viewModel = viewModel){ appState.navigate(IgniteRoutes.SubscriptionForm.route) }
             }
         }
     }
@@ -111,7 +113,8 @@ fun ProfileScreen(
 
 @Composable fun ShowPost(
     count : Int,
-    onclk : ()->Unit
+    viewModel: ProfileViewModel,
+    onclk : ()->Unit,
 ){
     Scaffold(
         floatingActionButton = {
@@ -126,6 +129,7 @@ fun ProfileScreen(
             items(count = count){ Posts() }
         }
     }
+
 }
 
 @Composable fun Posts(){
@@ -143,7 +147,8 @@ fun ProfileScreen(
 
 @Composable fun ShowSubscription(
     count : Int,
-    onclk : ()->Unit
+    viewModel: ProfileViewModel,
+    onclk : ()->Unit,
     ){
         Scaffold(
             floatingActionButton = {
