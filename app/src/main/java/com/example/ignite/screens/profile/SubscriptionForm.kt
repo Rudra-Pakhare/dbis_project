@@ -25,17 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ignite.IgniteRoutes
 import com.example.ignite.IgniteState
 import com.example.ignite.models.User
-import com.example.ignite.models.user.PostUpload
 import com.example.ignite.models.user.SubscriptionUpload
 
 @Composable
 fun SubscriptionForm(
     appState: IgniteState,
-    viewModel: ProfileViewModel = hiltViewModel(),
+    viewModel: ProfileViewModel,
 ) {
     val user = viewModel.accountService.currentUser.collectAsState(initial = User())
     var title by remember { mutableStateOf("") }

@@ -1,32 +1,23 @@
 package com.example.ignite.screens.profile
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.NavigationRailItem
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -37,26 +28,16 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.example.ignite.IgniteRoutes
 import com.example.ignite.IgniteState
 import com.example.ignite.composables.bottombar.MyBottomBar
@@ -65,18 +46,15 @@ import com.example.ignite.models.User
 import com.example.ignite.utils.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import com.example.ignite.R.drawable as AppImages
-
 @Composable
 fun ProfileScreen(
     appState : IgniteState,
-    viewModel: ProfileViewModel = hiltViewModel(),
+    viewModel: ProfileViewModel,
     scaffoldState : ScaffoldState = rememberScaffoldState(),
     coroutineScope : CoroutineScope = rememberCoroutineScope(),
 ){
     val user = viewModel.accountService.currentUser.collectAsState(initial = User())
     var tab by remember { mutableStateOf(0) }
-    var count by remember { mutableStateOf(0) }
     val profilePic = viewModel.profileLiveData.observeAsState()
     Scaffold (
         scaffoldState = scaffoldState,
@@ -130,10 +108,10 @@ fun ProfileScreen(
                 }
             }
             if(tab==0 && !user.value.isAnonymous){
-                ShowPost(count = count, viewModel = viewModel){ appState.navigateAndPopUp(IgniteRoutes.PostForm.route,IgniteRoutes.ProfileScreen.route) }
+                ShowPost(viewModel = viewModel){ appState.navigateAndPopUp(IgniteRoutes.PostForm.route,IgniteRoutes.ProfileScreen.route) }
             }
             else if(tab==1){
-                ShowSubscription(count = count, viewModel = viewModel){ appState.navigateAndPopUp(IgniteRoutes.SubscriptionForm.route,IgniteRoutes.ProfileScreen.route) }
+                ShowSubscription(viewModel = viewModel){ appState.navigateAndPopUp(IgniteRoutes.SubscriptionForm.route,IgniteRoutes.ProfileScreen.route) }
             }
         }
     }
@@ -144,7 +122,6 @@ fun ProfileScreen(
 }
 
 @Composable fun ShowPost(
-    count : Int,
     viewModel: ProfileViewModel,
     onclk : ()->Unit,
 ){
@@ -223,7 +200,6 @@ fun PostCard(
 }
 
 @Composable fun ShowSubscription(
-    count : Int,
     viewModel: ProfileViewModel,
     onclk : ()->Unit,
 ){

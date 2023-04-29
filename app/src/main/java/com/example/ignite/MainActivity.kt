@@ -13,24 +13,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ignite.screens.apitesting.ApiScreen
 import com.example.ignite.screens.feeds.FeedScreen
+import com.example.ignite.screens.feeds.FeedViewModel
 import com.example.ignite.screens.home.Exercise
 import com.example.ignite.screens.home.HomeScreen
+import com.example.ignite.screens.home.HomeViewModel
 import com.example.ignite.screens.login.LoginScreen
 import com.example.ignite.screens.profile.DeletePost
 import com.example.ignite.screens.profile.DeleteSubs
 import com.example.ignite.screens.profile.PostForm
 import com.example.ignite.screens.profile.ProfileScreen
+import com.example.ignite.screens.profile.ProfileViewModel
 import com.example.ignite.screens.profile.SubscriptionForm
 import com.example.ignite.screens.profile.UpdateProfilePic
 import com.example.ignite.screens.signup.SignUpScreen
 import com.example.ignite.screens.snackbar.SnackbarManager
 import com.example.ignite.screens.training.TrainingScreen
+import com.example.ignite.screens.training.TrainingViewModel
 import com.example.ignite.ui.theme.IGNITETheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -60,6 +65,10 @@ fun IgniteApp(
     startDestination: String
 ){
     val appState = rememberAppState(navController)
+    val profileViewModel: ProfileViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val trainingViewModel: TrainingViewModel = hiltViewModel()
+    val feedViewModel: FeedViewModel = hiltViewModel()
     Scaffold(
         snackbarHost = {
             SnackbarHost(
@@ -81,37 +90,37 @@ fun IgniteApp(
                 SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
             }
             composable(route = IgniteRoutes.ProfileScreen.route){
-                ProfileScreen(appState = appState)
+                ProfileScreen(appState = appState, viewModel = profileViewModel)
             }
             composable(route = IgniteRoutes.HomeScreen.route){
-                HomeScreen(appState = appState)
+                HomeScreen(appState = appState, viewModel = homeViewModel)
             }
             composable(route = IgniteRoutes.TrainingScreen.route){
-                TrainingScreen(appState = appState)
+                TrainingScreen(appState = appState, viewModel = trainingViewModel)
             }
             composable(route = IgniteRoutes.ApiScreen.route){
                 ApiScreen(appState = appState)
             }
             composable(route = IgniteRoutes.Exercise.route + "/{exercise}"){
-                Exercise(appState = appState, exercise = it.arguments?.getString("exercise") ?: "")
+                Exercise(appState = appState, exercise = it.arguments?.getString("exercise") ?: "", viewModel = homeViewModel)
             }
             composable(route = IgniteRoutes.PostForm.route){
-                PostForm(appState = appState)
+                PostForm(appState = appState, viewModel = profileViewModel)
             }
             composable(route = IgniteRoutes.SubscriptionForm.route){
-                SubscriptionForm(appState = appState)
+                SubscriptionForm(appState = appState, viewModel = profileViewModel)
             }
             composable(route = IgniteRoutes.FeedScreen.route){
-                FeedScreen(appState = appState)
+                FeedScreen(appState = appState, viewModel = feedViewModel)
             }
             composable(route = IgniteRoutes.UpdateProfilePic.route){
-                UpdateProfilePic(appState = appState)
+                UpdateProfilePic(appState = appState, viewModel = profileViewModel)
             }
             composable(route = IgniteRoutes.DeletePost.route){
-                DeletePost(appState = appState)
+                DeletePost(appState = appState, viewModel = profileViewModel)
             }
             composable(route = IgniteRoutes.DeleteSubs.route){
-                DeleteSubs(appState = appState)
+                DeleteSubs(appState = appState, viewModel = profileViewModel)
             }
         }
     }

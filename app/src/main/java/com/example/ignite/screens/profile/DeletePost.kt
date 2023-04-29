@@ -15,18 +15,14 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,25 +30,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.ignite.IgniteRoutes
 import com.example.ignite.IgniteState
-import com.example.ignite.composables.bottombar.MyBottomBar
-import com.example.ignite.composables.topbar.MyTopBar
-import com.example.ignite.models.User
-import com.example.ignite.screens.feeds.FeedViewModel
 import com.example.ignite.utils.Constants
-import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun DeletePost(
     appState : IgniteState,
-    viewModel: ProfileViewModel = hiltViewModel(),
-    scaffoldState : ScaffoldState = rememberScaffoldState()
+    viewModel: ProfileViewModel,
 ){
-    val user = viewModel.accountService.currentUser.collectAsState(initial = User())
     val posts by viewModel.postLiveData.observeAsState()
     Scaffold (
         topBar = {
@@ -110,9 +97,7 @@ fun PostDelete(
             .clickable { },
         elevation = 10.dp
     ) {
-        Column(
-
-        ){
+        Column{
             Button(onClick = { viewModel.deletePost(postId)
                 viewModel.getPost() }) {
                 Text(text = "Delete", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)

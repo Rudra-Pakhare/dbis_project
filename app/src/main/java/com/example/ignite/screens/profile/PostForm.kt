@@ -3,7 +3,6 @@ package com.example.ignite.screens.profile
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -32,21 +31,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.ignite.IgniteRoutes
 import com.example.ignite.IgniteState
 import com.example.ignite.models.User
 import com.example.ignite.models.user.PostUpload
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 
 @Composable
 fun PostForm(
     appState: IgniteState,
-    viewModel: ProfileViewModel = hiltViewModel(),
+    viewModel: ProfileViewModel,
     context: Context = LocalContext.current
 ) {
     val user = viewModel.accountService.currentUser.collectAsState(initial = User())

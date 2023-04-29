@@ -16,7 +16,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -31,19 +30,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.ignite.IgniteRoutes
 import com.example.ignite.IgniteState
 import com.example.ignite.models.User
-import com.example.ignite.models.user.PostUpload
 import java.io.File
 import java.io.FileOutputStream
 
 @Composable
 fun UpdateProfilePic(
     appState: IgniteState,
-    viewModel: ProfileViewModel = hiltViewModel(),
+    viewModel: ProfileViewModel,
     context: Context = LocalContext.current
 ) {
     val user = viewModel.accountService.currentUser.collectAsState(initial = User())
