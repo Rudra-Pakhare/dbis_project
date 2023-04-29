@@ -14,4 +14,6 @@ sealed class IgniteRoutes(val route: String){
     object UpdateProfilePic : IgniteRoutes("update_profile_screen")
     object DeletePost : IgniteRoutes("delete_post")
     object DeleteSubs : IgniteRoutes("delete_subs")
+    object ChatScreen : IgniteRoutes("chat_screen")
+    object MessageScreen : IgniteRoutes("message_screen")
 }

@@ -26,6 +26,9 @@ class ProfileViewModel @Inject constructor(
     val subscriptionLiveData get() = userRepository.subscriptionLiveData
     val profileLiveData get() = userRepository.profileLiveData
 
+    val postCount:Int get() = postLiveData.value?.data?.size ?: 0
+    val subscriptionCount:Int get() = subscriptionLiveData.value?.data?.size ?: 0
+
     fun postUpload(postUpload: PostUpload) {
         launchCatching {
             userRepository.postUpload(postUpload)

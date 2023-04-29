@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
@@ -92,13 +93,15 @@ fun PostForm(
                     .fillMaxWidth()
                     .padding(10.dp)
             )
-            Button(onClick = {
+            Button(modifier = Modifier.fillMaxWidth().height(75.dp).padding(start = 75.dp,end = 75.dp, top = 10.dp, bottom = 10.dp),
+                onClick = {
                 galleryLauncher.launch("image/*")
             }) {
                 Text(text = "Upload Image")
             }
             if(image != null) Image(painter = rememberAsyncImagePainter(model = image), contentDescription = null)
-            Button(onClick = {
+            Button(modifier = Modifier.fillMaxWidth().height(75.dp).padding(start = 75.dp,end = 75.dp, top = 10.dp, bottom = 10.dp),
+                onClick = {
                 if(image != null) {
                     val cacheFile = File(context.cacheDir, "image.png")
                     val inputStream = context.contentResolver.openInputStream(image!!)

@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,7 +38,7 @@ fun HomeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 10.dp, bottom = 50.dp,top = 5.dp),
+                .padding(start = 10.dp, bottom = 65.dp, top = 10.dp),
         ) {
             itemsIndexed(exercises?.data?.categories ?: listOf()) { index, exercise ->
                 ColumnItem(text = exercise, exerciseX = exercises?.data?.exercises?.get(index) ?: listOf(), appState = appState)
@@ -54,10 +55,12 @@ fun HomeScreen(
 fun ColumnItem(
     text: String,
     exerciseX: List<String>,
-    appState: IgniteState
+    appState: IgniteState,
 ){
     Text(text = text, fontSize = 30.sp, fontWeight = FontWeight.Bold)
-    LazyRow {
+    LazyRow(
+        modifier = Modifier.padding(bottom = 20.dp, top = 0.dp),
+    ) {
         itemsIndexed(exerciseX) { index, exercise ->
             ExerciseCard(exercise = exercise, appState = appState)
         }
@@ -71,12 +74,17 @@ fun ExerciseCard(
 ) {
     Card(
         modifier = Modifier
-            .width(200.dp)
-            .height(200.dp)
-            .padding(15.dp)
-            .clickable { appState.navigate(IgniteRoutes.Exercise.route + "/"+exercise ) },
+            .height(125.dp)
+            .padding(5.dp)
+            .clickable { appState.navigate(IgniteRoutes.Exercise.route + "/" + exercise) },
         elevation = 10.dp
     ) {
-        Text(text = exercise, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Row(
+            modifier = Modifier
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = exercise, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        }
     }
 }

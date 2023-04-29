@@ -9,6 +9,7 @@ import com.example.ignite.models.service.LogService
 import com.example.ignite.repository.GeneralRepository
 import com.example.ignite.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.getstream.chat.android.client.ChatClient
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +19,8 @@ class HomeViewModel @Inject constructor(
     val accountService: AccountService,
     logService: LogService,
     private val generalRepository: GeneralRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val client: ChatClient,
 ) : IgniteViewModel(logService){
 
     val exerciseResponseLiveData get() = generalRepository.exerciseResponseLiveData
@@ -43,6 +45,16 @@ class HomeViewModel @Inject constructor(
             getExercises()
             accountService.currentUser.collect{
                 userRepository.signup(it)
+                if(!it.isAnonymous){
+                    client.connectUser(
+                        user = io.getstream.chat.android.client.models.User(
+                            id = accountService.currentUserId,
+                            name = "Ignite User"
+                        ),
+                        client.devToken(accountService.currentUserId),
+                        timeoutMilliseconds = null,
+                    ).enqueue()
+                }
             }
         }
     }

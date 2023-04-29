@@ -70,9 +70,9 @@ fun Exercise(
                             IgniteRoutes.Exercise.route + "/" + exercise
                         )
                     }
-                    .padding(10.dp)
-                    .size(30.dp))
-                Text(text = exercise, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    .padding(7.dp)
+                    .size(40.dp))
+                Text(text = exercise, fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(end = 0.dp))
             }
         }
     ){
@@ -98,7 +98,7 @@ fun Exercise(
                         .size(350.dp)
                 )
                 Text(text = "Steps", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-                Text(text = exercises?.data?.steps ?: "", fontSize = 20.sp, fontWeight = FontWeight.Light, modifier = Modifier.padding(10.dp))
+                Text(text = exercises?.data?.steps ?: "", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(30.dp,top=10.dp))
             }
         }
     }

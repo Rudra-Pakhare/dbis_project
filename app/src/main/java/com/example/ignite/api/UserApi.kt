@@ -47,11 +47,11 @@ interface UserApi {
     @POST("update/profilepic")//done
     suspend fun postProfilePic(@Part image: MultipartBody.Part, @Part("userId") userId: RequestBody) : Response<ProfilePic>
 
-    @POST("subscribe")
-    suspend fun subscribe(@Body userId: String,@Body subsId:String) : Response<SubscriptionUpload>
+    @POST("subscribe/{userId}/{subsId}")//done
+    suspend fun subscribe(@Path("userId",encoded = false) userId: String,@Path("subsId",encoded = false) subsId:String) : Response<SubscriptionUpload>
 
-    @POST("unsubscribe")
-    suspend fun unsubscribe(@Body userId: String,@Body subsId:String) : Response<SubscriptionUpload>
+    @POST("unsubscribe/{userId}/{subsId}")
+    suspend fun unsubscribe(@Path("userId",encoded = false) userId: String,@Path("subsId",encoded = false) subsId:String) : Response<SubscriptionUpload>
 
     @DELETE("post/delete/{postId}/{userId}")//done
     suspend fun deletePost(@Path("postId",encoded = false) postId: String,@Path("userId",encoded = false) userId: String) : Response<PostUpload>

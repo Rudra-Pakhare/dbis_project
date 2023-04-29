@@ -5,15 +5,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
@@ -56,15 +60,16 @@ fun TrainingScreen(
         topBar = { MyTopBar() }
     ) { _ ->
         Column{
-            Column() {
+            Column{
                 Text(text = "My Subscriptions", fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp,top = 10.dp))
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 0.dp, top = 0.dp),
+                        .padding(end = 0.dp, start = 0.dp),
                 ) {
                     items(subscriptionsTaken?.data?: listOf()) {item ->
-                        SubscriptionCard(viewModel = viewModel, subsId = item.subsid,userName = item.mentorname, userImage = item.mentorprofilepic, subsDesc = item.subsdesc, subsTitle = item.title, subsCategory = item.category, subsText = "Unsubscribe")
+                        SubscriptionCard(modifier = Modifier.width(300.dp),
+                            viewModel = viewModel,name = user.value.name?:"", userId = user.value.id, mentorId = item.mentorid, subsId = item.subsid,userName = item.mentorname, userImage = item.mentorprofilepic, subsDesc = item.subsdesc, subsTitle = item.title, subsCategory = item.category, subsText = "Unsubscribe")
                     }
                 }
             }
@@ -76,7 +81,7 @@ fun TrainingScreen(
                         .padding(bottom = 50.dp, top = 0.dp),
                 ) {
                     items(subscriptionsAll?.data?: listOf()) {item ->
-                        SubscriptionCard(viewModel = viewModel, subsId = item.subsid ,show = user.value.isAnonymous, userName = item.mentorname, userImage = item.mentorprofilepic, subsDesc = item.subsdesc, subsTitle = item.title, subsCategory = item.category, subsText = "Subscribe")
+                        SubscriptionCard(viewModel = viewModel,name = user.value.name?:"", userId = user.value.id, mentorId = item.mentorid, subsId = item.subsid ,show = user.value.isAnonymous, userName = item.mentorname, userImage = item.mentorprofilepic, subsDesc = item.subsdesc, subsTitle = item.title, subsCategory = item.category, subsText = "Subscribe")
                     }
                 }
             }
@@ -98,34 +103,39 @@ fun SubscriptionCard(
     subsText: String = "Subscribe",
     show: Boolean = false,
     viewModel: TrainingViewModel,
-    subsId:String
+    subsId:String,
+    mentorId:String,
+    userId:String,
+    name:String,
+    modifier: Modifier = Modifier
 ){
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
+        modifier = modifier
+            .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
             .clickable { },
-        elevation = 10.dp
+        elevation = 5.dp
     ) {
-        Column(
-
-        ){
+        Column {
             Text(text = subsTitle, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
             Text(text = subsCategory, fontSize = 15.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
-            Text(text = subsDesc, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+            Spacer(modifier = Modifier.height(5.dp))
+            Divider()
+            Text(text = subsDesc, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 25.dp, top = 10.dp, end = 25.dp))
+            Spacer(modifier = Modifier.height(5.dp))
+            Divider()
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 10.dp, top = 10.dp),
+                    .padding(start = 10.dp, top = 0.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 10.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 0.dp)) {
                     if(userImage=="") Icon(
                         painter = rememberVectorPainter(image = Icons.Default.Person),
                         contentDescription = "User Image",
                         modifier = Modifier
-                            .size(25.dp)
+                            .size(30.dp)
                             .clip(CircleShape)
                             .border(
                                 width = 1.dp,
@@ -137,7 +147,7 @@ fun SubscriptionCard(
                         model = Constants.BASE_URL + userImage,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(25.dp)
+                            .size(30.dp)
                             .clip(CircleShape)
                             .border(
                                 width = 1.dp,
@@ -145,12 +155,17 @@ fun SubscriptionCard(
                                 shape = CircleShape
                             )
                     )
-                    Text(text = userName, fontSize = 10.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
+                    Text(text = userName, fontSize = 15.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
                 }
                 if(!show)Button(onClick = {
-                    if(subsText=="Subscribe") viewModel.subscribe(subsId = subsId)
-                    else viewModel.unsubscribe(subsId)
-                    viewModel.onAppStart() },modifier = Modifier.padding(10.dp)) {
+                    if(subsText=="Subscribe") {
+                        viewModel.subscribe(subsId = subsId)
+                        viewModel.createChannel(userId = userId, mentorId = mentorId,name = userName+ "_" + name)
+                    }
+                    else {
+                        viewModel.unsubscribe(subsId = subsId)
+                    }
+                    viewModel.onAppStart() },modifier = Modifier.padding(5.dp)) {
                     Text(text = subsText, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
                 }
             }

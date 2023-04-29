@@ -19,6 +19,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ignite.screens.apitesting.ApiScreen
+import com.example.ignite.screens.chat.ChatScreen
+import com.example.ignite.screens.chat.ChatViewModel
+import com.example.ignite.screens.chat.MessageScreen
 import com.example.ignite.screens.feeds.FeedScreen
 import com.example.ignite.screens.feeds.FeedViewModel
 import com.example.ignite.screens.home.Exercise
@@ -45,6 +48,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+
         setContent {
             IGNITETheme {
                 // A surface container using the 'background' color from the theme
@@ -69,6 +73,7 @@ fun IgniteApp(
     val homeViewModel: HomeViewModel = hiltViewModel()
     val trainingViewModel: TrainingViewModel = hiltViewModel()
     val feedViewModel: FeedViewModel = hiltViewModel()
+    val chatViewModel: ChatViewModel = hiltViewModel()
     Scaffold(
         snackbarHost = {
             SnackbarHost(
@@ -121,6 +126,12 @@ fun IgniteApp(
             }
             composable(route = IgniteRoutes.DeleteSubs.route){
                 DeleteSubs(appState = appState, viewModel = profileViewModel)
+            }
+            composable(route = IgniteRoutes.ChatScreen.route){
+                ChatScreen(appState = appState, viewModel = chatViewModel)
+            }
+            composable(route = IgniteRoutes.MessageScreen.route + "/{id}"){
+                MessageScreen(appState = appState, channelId = it.arguments?.getString("id") ?: "", viewModel = chatViewModel)
             }
         }
     }

@@ -61,19 +61,37 @@ fun ProfileScreen(
         bottomBar = { MyBottomBar(appState = appState,4,user.value.isAnonymous) },
         drawerContent = {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 50.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(onClick = { appState.navigateAndPopUp(IgniteRoutes.UpdateProfilePic.route,IgniteRoutes.ProfileScreen.route) }) {
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .height(50.dp),
+                    onClick = { appState.navigateAndPopUp(IgniteRoutes.UpdateProfilePic.route,IgniteRoutes.ProfileScreen.route) }) {
                     Text(text = "Edit Profile Pic")
                 }
-                Button(onClick = { appState.navigateAndPopUp(IgniteRoutes.DeletePost.route,IgniteRoutes.ProfileScreen.route) }) {
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .height(50.dp),
+                    onClick = { appState.navigateAndPopUp(IgniteRoutes.DeletePost.route,IgniteRoutes.ProfileScreen.route) }) {
                     Text(text = "Delete Post")
                 }
-                Button(onClick = { appState.navigateAndPopUp(IgniteRoutes.DeleteSubs.route,IgniteRoutes.ProfileScreen.route) }) {
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .height(50.dp),
+                    onClick = { appState.navigateAndPopUp(IgniteRoutes.DeleteSubs.route,IgniteRoutes.ProfileScreen.route) }) {
                     Text(text = "Delete Subscription")
                 }
-                Button(onClick = { viewModel.onLogoutClick(); appState.clearAndNavigate(IgniteRoutes.HomeScreen.route) }) {
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .height(50.dp),
+                    onClick = { viewModel.onLogoutClick(); appState.clearAndNavigate(IgniteRoutes.HomeScreen.route) }) {
                     Text(text = "Log Out")
                 }
             }
@@ -85,9 +103,8 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(5.dp))
-            ProfileSection(user = ""+if(user.value.isAnonymous)"Guest" else user.value.name, profilePic = profilePic.value?.data?.profilepicpath?:"")
+            ProfileSection(posts = viewModel.postCount, subscriptions = viewModel.subscriptionCount, user = ""+if(user.value.isAnonymous)"Guest" else user.value.name, profilePic = profilePic.value?.data?.profilepicpath?:"")
             Spacer(modifier = Modifier.height(10.dp))
-            Divider()
             TabRow(selectedTabIndex = tab, modifier = Modifier.height(60.dp)) {
                 if(!user.value.isAnonymous){
                     Tab(selected = tab==0, onClick = { tab=0 }, text={Text(text="post")})
@@ -135,7 +152,9 @@ fun ProfileScreen(
         modifier = Modifier.padding(bottom = 50.dp)
     ) {
         _ ->
-        LazyColumn(modifier = Modifier.fillMaxWidth()){
+        LazyColumn(modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 10.dp)){
             items(posts?.data?: listOf()){ post ->
                 PostCard(postImage = post.postimgpath, postDesc = post.postdescr, postDate = post.postdate, userName = post.username, userImage = post.profilepicpath)
             }
@@ -155,7 +174,7 @@ fun PostCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp)
+            .padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
             .clickable { },
         elevation = 10.dp
     ) {
@@ -170,7 +189,7 @@ fun PostCard(
                     imageVector = Icons.Default.Person,
                     contentDescription = "User Image",
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(40.dp)
                         .clip(CircleShape)
                         .border(
                             width = 1.dp,
@@ -182,7 +201,7 @@ fun PostCard(
                     model = Constants.BASE_URL + userImage,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(40.dp)
                         .clip(CircleShape)
                         .border(
                             width = 1.dp,
@@ -192,6 +211,7 @@ fun PostCard(
                 )
                 Text(text = userName, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
             }
+            Divider()
             if(postImage != "") AsyncImage(model = Constants.BASE_URL + postImage, contentDescription = null)
             Text(text = postDesc, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
             Text(text = postDate, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
@@ -213,7 +233,7 @@ fun PostCard(
         modifier = Modifier.padding(bottom = 50.dp)
     ) {
             _ ->
-        LazyColumn(modifier = Modifier.fillMaxWidth()){
+        LazyColumn(modifier = Modifier.fillMaxWidth().padding(bottom=10.dp)){
             items(subscriptions?.data?: listOf()){ subs ->
                 SubscriptionCard(subsDesc = subs.subsdesc, subsTitle = subs.title, subsCategory = subs.category)
             }
@@ -230,16 +250,15 @@ fun SubscriptionCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp)
+            .padding(10.dp)
             .clickable { },
         elevation = 10.dp
     ) {
-        Column(
-
-        ){
+        Column{
             Text(text = subsTitle, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
             Text(text = subsCategory, fontSize = 15.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
-            Text(text = subsDesc, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+            Divider()
+            Text(text = subsDesc, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 15.dp, end = 20.dp))
         }
     }
 }
@@ -248,42 +267,50 @@ fun SubscriptionCard(
 fun ProfileSection(
     user: String,
     profilePic:String = "",
+    posts:Int,
+    subscriptions:Int,
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(top = 10.dp)
+            .padding(start = 30.dp, top = 10.dp, bottom = 5.dp)
             .fillMaxWidth()
     ) {
         if(profilePic=="") Icon(
             painter = rememberVectorPainter(image = Icons.Default.Person),
             contentDescription = "User Image",
             modifier = Modifier
-                .size(100.dp)
+                .size(80.dp)
                 .aspectRatio(1f, matchHeightConstraintsFirst = true)
                 .border(
                     width = 1.dp,
                     color = Color.LightGray,
                     shape = CircleShape
                 )
-                .padding(3.dp)
                 .clip(CircleShape)
         )
         else AsyncImage(
             model = Constants.BASE_URL + profilePic,
             contentDescription = null,
             modifier = Modifier
-                .size(100.dp)
+                .size(80.dp)
                 .aspectRatio(1f, matchHeightConstraintsFirst = true)
                 .border(
                     width = 1.dp,
                     color = Color.LightGray,
                     shape = CircleShape
                 )
-                .padding(3.dp)
                 .clip(CircleShape)
         )
         Spacer(modifier = Modifier.height(15.dp))
-        Text(text = user)
+        Text(text = user, fontSize = 25.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 20.dp))
+        Spacer(modifier = Modifier.width(20.dp))
+        Divider(modifier = Modifier
+            .width(1.dp)
+            .height(50.dp))
+        Column {
+            Text(text = "Posts : $posts", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 20.dp))
+            Text(text = "Subscriptions : $subscriptions", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 20.dp))
+        }
     }
 }

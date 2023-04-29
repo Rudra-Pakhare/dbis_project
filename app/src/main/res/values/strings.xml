@@ -6,4 +6,5 @@
     <string name="generic_error">Something wrong happened. Please try again.</string>
     <string name="email_error">Please insert a valid email.</string>
     <string name="name_error">Name cannot be empty.</string>
+    <string name="stream_api_key">s8c4p3ynv8np</string>
 </resources>

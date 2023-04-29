@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
@@ -94,7 +95,8 @@ fun SubscriptionForm(
                     .fillMaxWidth()
                     .padding(10.dp)
             )
-            Button(onClick = {
+            Button(modifier = Modifier.fillMaxWidth().height(75.dp).padding(start = 75.dp,end = 75.dp, top = 10.dp, bottom = 10.dp),
+                onClick = {
                 viewModel.subscriptionUpload(SubscriptionUpload(title = title, subsDesc = desc, category = category, mentorId = user.value.id))
                 appState.navigateAndPopUp(
                     IgniteRoutes.ProfileScreen.route,

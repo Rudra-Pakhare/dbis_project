@@ -17,6 +17,9 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth) : A
     override val currentUserId: String
         get() = auth.currentUser?.uid.orEmpty()
 
+    override val currentUserToken: String
+        get() = auth.currentUser?.getIdToken(false)?.result?.token.orEmpty()
+
     override val hasUser: Boolean
         get() = auth.currentUser != null
 

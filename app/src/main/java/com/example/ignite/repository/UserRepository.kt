@@ -242,7 +242,7 @@ class UserRepository @Inject constructor(private val userApi: UserApi) {
     suspend fun subscribe(id: String,userId:String){
         _subscriptionUploadLiveData.postValue(NetworkResult.Loading())
         try {
-            val response = userApi.subscribe(id,userId)
+            val response = userApi.subscribe(subsId = id,userId = userId)
             if (response.isSuccessful && response.body() != null) {
                 _subscriptionUploadLiveData.postValue(NetworkResult.Success(response.body()!!))
             }
@@ -261,7 +261,7 @@ class UserRepository @Inject constructor(private val userApi: UserApi) {
     suspend fun unsubscribe(id: String,userId:String){
         _subscriptionUploadLiveData.postValue(NetworkResult.Loading())
         try {
-            val response = userApi.unsubscribe(id,userId)
+            val response = userApi.unsubscribe(subsId = id, userId = userId)
             if (response.isSuccessful && response.body() != null) {
                 _subscriptionUploadLiveData.postValue(NetworkResult.Success(response.body()!!))
             }

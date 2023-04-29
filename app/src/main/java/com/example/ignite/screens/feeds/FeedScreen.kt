@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
@@ -77,7 +78,7 @@ fun PostCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp)
+            .padding(10.dp)
             .clickable { },
         elevation = 10.dp
     ) {
@@ -92,7 +93,7 @@ fun PostCard(
                     imageVector = Icons.Default.Person,
                     contentDescription = "User Image",
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(40.dp)
                         .clip(CircleShape)
                         .border(
                             width = 1.dp,
@@ -104,7 +105,7 @@ fun PostCard(
                     model = Constants.BASE_URL + userImage,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(40.dp)
                         .clip(CircleShape)
                         .border(
                             width = 1.dp,
@@ -114,6 +115,7 @@ fun PostCard(
                 )
                 Text(text = userName, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
             }
+            Divider()
             if(postImage != "") AsyncImage(model = Constants.BASE_URL + postImage, contentDescription = null)
             Text(text = postDesc, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
             Text(text = postDate, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
