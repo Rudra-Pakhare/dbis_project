@@ -3,7 +3,6 @@ package com.example.ignite.screens.profile
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,19 +37,16 @@ import com.example.ignite.IgniteRoutes
 import com.example.ignite.IgniteState
 import com.example.ignite.models.User
 import com.example.ignite.models.user.PostUpload
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 
 @Composable
-fun PostForm(
+fun UpdateProfilePic(
     appState: IgniteState,
     viewModel: ProfileViewModel = hiltViewModel(),
     context: Context = LocalContext.current
 ) {
     val user = viewModel.accountService.currentUser.collectAsState(initial = User())
-    var desc by remember { mutableStateOf("") }
     var image by remember { mutableStateOf<Uri?>(null) }
     var galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
@@ -71,16 +67,16 @@ fun PostForm(
                         .clickable {
                             appState.navigateAndPopUp(
                                 IgniteRoutes.ProfileScreen.route,
-                                IgniteRoutes.PostForm.route
+                                IgniteRoutes.UpdateProfilePic.route
                             )
                         }
                         .padding(10.dp)
                         .size(30.dp))
-                Text(text = "Upload Post", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Update ProfilePic", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
     ){
-        _ ->
+            _ ->
         Column (
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,14 +84,6 @@ fun PostForm(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-            TextField(
-                value = desc,
-                onValueChange = { desc = it },
-                label = { Text("Description") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            )
             Button(onClick = {
                 galleryLauncher.launch("image/*")
             }) {
@@ -113,15 +101,14 @@ fun PostForm(
                             input.copyTo(output)
                         }
                     }
-                    viewModel.postUploadImage(postDesc = desc, userId = user.value.id, image = cacheFile)
+                    viewModel.postProfileImage(userId = user.value.id, image = cacheFile)
+                    appState.navigateAndPopUp(
+                        IgniteRoutes.ProfileScreen.route,
+                        IgniteRoutes.UpdateProfilePic.route
+                    )
                 }
-                else {viewModel.postUpload(PostUpload(postDesc = desc, userId = user.value.id))}
-                appState.navigateAndPopUp(
-                    IgniteRoutes.ProfileScreen.route,
-                    IgniteRoutes.PostForm.route
-                )
             }) {
-                Text(text = "Upload")
+                Text(text = "Update")
             }
         }
     }

@@ -82,25 +82,47 @@ class GeneralRepository @Inject constructor(private val generalApi: GeneralApi) 
         }
     }
 
-    private val _subscriptionsLiveData = MutableLiveData<NetworkResult<Subscriptions>>()
-    val subscriptionsLiveData: LiveData<NetworkResult<Subscriptions>>
-        get() = _subscriptionsLiveData
-    suspend fun getSubscriptions() {
-        _subscriptionsLiveData.postValue(NetworkResult.Loading())
+    private val _subscriptionsAllLiveData = MutableLiveData<NetworkResult<Subscriptions>>()
+    val subscriptionsAllLiveData: LiveData<NetworkResult<Subscriptions>>
+        get() = _subscriptionsAllLiveData
+    suspend fun getSubscriptionsAll(id: String) {
+        _subscriptionsAllLiveData.postValue(NetworkResult.Loading())
         try {
-            val response = generalApi.getSubscriptions()
+            val response = generalApi.getSubscriptionsAll(id)
             if (response.isSuccessful && response.body() != null) {
-                _subscriptionsLiveData.postValue(NetworkResult.Success(response.body()!!))
+                _subscriptionsAllLiveData.postValue(NetworkResult.Success(response.body()!!))
             }
             else if(response.errorBody()!=null){
                 val errorObj = JSONObject(response.errorBody()!!.charStream().readText())
-                _subscriptionsLiveData.postValue(NetworkResult.Error(errorObj.getString("message")))
+                _subscriptionsAllLiveData.postValue(NetworkResult.Error(errorObj.getString("message")))
             }
             else{
-                _subscriptionsLiveData.postValue(NetworkResult.Error("Something Went Wrong"))
+                _subscriptionsAllLiveData.postValue(NetworkResult.Error("Something Went Wrong"))
             }
         } catch (e: Exception) {
-            _subscriptionsLiveData.postValue(NetworkResult.Error(e.message))
+            _subscriptionsAllLiveData.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    private val _subscriptionsTakenLiveData = MutableLiveData<NetworkResult<Subscriptions>>()
+    val subscriptionsTakenLiveData: LiveData<NetworkResult<Subscriptions>>
+        get() = _subscriptionsTakenLiveData
+    suspend fun getSubscriptionsTaken(id: String) {
+        _subscriptionsTakenLiveData.postValue(NetworkResult.Loading())
+        try {
+            val response = generalApi.getSubscriptionsTaken(id)
+            if (response.isSuccessful && response.body() != null) {
+                _subscriptionsTakenLiveData.postValue(NetworkResult.Success(response.body()!!))
+            }
+            else if(response.errorBody()!=null){
+                val errorObj = JSONObject(response.errorBody()!!.charStream().readText())
+                _subscriptionsTakenLiveData.postValue(NetworkResult.Error(errorObj.getString("message")))
+            }
+            else{
+                _subscriptionsTakenLiveData.postValue(NetworkResult.Error("Something Went Wrong"))
+            }
+        } catch (e: Exception) {
+            _subscriptionsTakenLiveData.postValue(NetworkResult.Error(e.message))
         }
     }
 }

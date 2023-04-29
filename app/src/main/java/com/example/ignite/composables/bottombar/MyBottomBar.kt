@@ -21,7 +21,8 @@ import com.example.ignite.R
 
 @Composable fun MyBottomBar(
     appState : IgniteState,
-    screen : Int
+    screen : Int,
+    show: Boolean = false
 ){
     BottomAppBar(
         backgroundColor = Color.White
@@ -52,12 +53,12 @@ import com.example.ignite.R
                 icon = { Icon(painterResource(R.drawable.baseline_person_24), contentDescription = null) },
                 label = { Text(text = "Feed") },
                 selected = screen == 2,
-                onClick = {},
+                onClick = {appState.navigate(IgniteRoutes.FeedScreen.route)},
                 selectedContentColor = MaterialTheme.colors.secondary,
                 unselectedContentColor = LocalContentColor.current,
                 modifier = Modifier.navigationBarsPadding()
             )
-            BottomNavigationItem(
+            if(!show)BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.baseline_person_24), contentDescription = null) },
                 label = { Text(text = "Chat") },
                 selected = screen == 3,

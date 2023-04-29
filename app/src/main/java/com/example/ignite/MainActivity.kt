@@ -18,12 +18,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ignite.screens.apitesting.ApiScreen
+import com.example.ignite.screens.feeds.FeedScreen
 import com.example.ignite.screens.home.Exercise
 import com.example.ignite.screens.home.HomeScreen
 import com.example.ignite.screens.login.LoginScreen
+import com.example.ignite.screens.profile.DeletePost
+import com.example.ignite.screens.profile.DeleteSubs
 import com.example.ignite.screens.profile.PostForm
 import com.example.ignite.screens.profile.ProfileScreen
 import com.example.ignite.screens.profile.SubscriptionForm
+import com.example.ignite.screens.profile.UpdateProfilePic
 import com.example.ignite.screens.signup.SignUpScreen
 import com.example.ignite.screens.snackbar.SnackbarManager
 import com.example.ignite.screens.training.TrainingScreen
@@ -56,7 +60,6 @@ fun IgniteApp(
     startDestination: String
 ){
     val appState = rememberAppState(navController)
-
     Scaffold(
         snackbarHost = {
             SnackbarHost(
@@ -97,6 +100,18 @@ fun IgniteApp(
             }
             composable(route = IgniteRoutes.SubscriptionForm.route){
                 SubscriptionForm(appState = appState)
+            }
+            composable(route = IgniteRoutes.FeedScreen.route){
+                FeedScreen(appState = appState)
+            }
+            composable(route = IgniteRoutes.UpdateProfilePic.route){
+                UpdateProfilePic(appState = appState)
+            }
+            composable(route = IgniteRoutes.DeletePost.route){
+                DeletePost(appState = appState)
+            }
+            composable(route = IgniteRoutes.DeleteSubs.route){
+                DeleteSubs(appState = appState)
             }
         }
     }

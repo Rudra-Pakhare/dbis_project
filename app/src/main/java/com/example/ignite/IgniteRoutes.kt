@@ -10,4 +10,8 @@ sealed class IgniteRoutes(val route: String){
     object Exercise : IgniteRoutes("exercise")
     object PostForm : IgniteRoutes("post_form")
     object SubscriptionForm : IgniteRoutes("subscription_form")
+    object FeedScreen : IgniteRoutes("feed_screen")
+    object UpdateProfilePic : IgniteRoutes("update_profile_screen")
+    object DeletePost : IgniteRoutes("delete_post")
+    object DeleteSubs : IgniteRoutes("delete_subs")
 }

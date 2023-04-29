@@ -20,6 +20,9 @@ interface GeneralApi {
     @GET("post")
     suspend fun getPosts() : Response<Posts>
 
-    @GET("subscription")
-    suspend fun getSubscriptions() : Response<Subscriptions>
+    @GET("subscription/taken/{id}")//done
+    suspend fun getSubscriptionsTaken(@Path("id",encoded = false) id: String) : Response<Subscriptions>
+
+    @GET("subscription/all/{id}")//done
+    suspend fun getSubscriptionsAll(@Path("id",encoded = false) id: String) : Response<Subscriptions>
 }

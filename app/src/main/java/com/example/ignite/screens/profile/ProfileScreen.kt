@@ -6,6 +6,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffold
@@ -25,10 +27,13 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -48,11 +54,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.ignite.IgniteRoutes
 import com.example.ignite.IgniteState
 import com.example.ignite.composables.bottombar.MyBottomBar
 import com.example.ignite.composables.topbar.MyTopBar
 import com.example.ignite.models.User
+import com.example.ignite.utils.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import com.example.ignite.R.drawable as AppImages
@@ -67,19 +77,37 @@ fun ProfileScreen(
     val user = viewModel.accountService.currentUser.collectAsState(initial = User())
     var tab by remember { mutableStateOf(0) }
     var count by remember { mutableStateOf(0) }
+    val profilePic = viewModel.profileLiveData.observeAsState()
     Scaffold (
         scaffoldState = scaffoldState,
-        bottomBar = { MyBottomBar(appState = appState,4) },
-        drawerContent = { Button(onClick = { viewModel.onLogoutClick(); appState.clearAndNavigate(IgniteRoutes.HomeScreen.route) }) {
-            Text(text = "Log Out")
-        }},
+        bottomBar = { MyBottomBar(appState = appState,4,user.value.isAnonymous) },
+        drawerContent = {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(onClick = { appState.navigateAndPopUp(IgniteRoutes.UpdateProfilePic.route,IgniteRoutes.ProfileScreen.route) }) {
+                    Text(text = "Edit Profile Pic")
+                }
+                Button(onClick = { appState.navigateAndPopUp(IgniteRoutes.DeletePost.route,IgniteRoutes.ProfileScreen.route) }) {
+                    Text(text = "Delete Post")
+                }
+                Button(onClick = { appState.navigateAndPopUp(IgniteRoutes.DeleteSubs.route,IgniteRoutes.ProfileScreen.route) }) {
+                    Text(text = "Delete Subscription")
+                }
+                Button(onClick = { viewModel.onLogoutClick(); appState.clearAndNavigate(IgniteRoutes.HomeScreen.route) }) {
+                    Text(text = "Log Out")
+                }
+            }
+        },
+        drawerGesturesEnabled = !user.value.isAnonymous,
         topBar = { MyTopBar() }
     ) { _ ->
         Column(
             verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(5.dp))
-            ProfileSection(user = ""+if(user.value.isAnonymous)"Guest" else user.value.name)
+            ProfileSection(user = ""+if(user.value.isAnonymous)"Guest" else user.value.name, profilePic = profilePic.value?.data?.profilepicpath?:"")
             Spacer(modifier = Modifier.height(10.dp))
             Divider()
             TabRow(selectedTabIndex = tab, modifier = Modifier.height(60.dp)) {
@@ -102,12 +130,16 @@ fun ProfileScreen(
                 }
             }
             if(tab==0 && !user.value.isAnonymous){
-                ShowPost(count = count, viewModel = viewModel){ appState.navigate(IgniteRoutes.PostForm.route) }
+                ShowPost(count = count, viewModel = viewModel){ appState.navigateAndPopUp(IgniteRoutes.PostForm.route,IgniteRoutes.ProfileScreen.route) }
             }
             else if(tab==1){
-                ShowSubscription(count = count, viewModel = viewModel){ appState.navigate(IgniteRoutes.SubscriptionForm.route) }
+                ShowSubscription(count = count, viewModel = viewModel){ appState.navigateAndPopUp(IgniteRoutes.SubscriptionForm.route,IgniteRoutes.ProfileScreen.route) }
             }
         }
+    }
+
+    LaunchedEffect(true) {
+        viewModel.onAppStart()
     }
 }
 
@@ -116,6 +148,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     onclk : ()->Unit,
 ){
+    val posts by viewModel.postLiveData.observeAsState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = onclk){
@@ -126,22 +159,66 @@ fun ProfileScreen(
     ) {
         _ ->
         LazyColumn(modifier = Modifier.fillMaxWidth()){
-            items(count = count){ Posts() }
+            items(posts?.data?: listOf()){ post ->
+                PostCard(postImage = post.postimgpath, postDesc = post.postdescr, postDate = post.postdate, userName = post.username, userImage = post.profilepicpath)
+            }
         }
     }
 
 }
 
-@Composable fun Posts(){
+@Composable
+fun PostCard(
+    userName: String = "User Name",
+    userImage: String = "",
+    postImage: String = "",
+    postDesc: String = "Post Text",
+    postDate: String = "Post Date",
+){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
             .padding(15.dp)
             .clickable { },
         elevation = 10.dp
     ) {
-        Text(text = "post", fontSize = 50.sp)
+        Column{
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, top = 10.dp, bottom = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if(userImage=="") Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "User Image",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = Color.LightGray,
+                            shape = CircleShape
+                        )
+                )
+                else AsyncImage(
+                    model = Constants.BASE_URL + userImage,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = Color.LightGray,
+                            shape = CircleShape
+                        )
+                )
+                Text(text = userName, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
+            }
+            if(postImage != "") AsyncImage(model = Constants.BASE_URL + postImage, contentDescription = null)
+            Text(text = postDesc, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+            Text(text = postDate, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+        }
     }
 }
 
@@ -149,38 +226,52 @@ fun ProfileScreen(
     count : Int,
     viewModel: ProfileViewModel,
     onclk : ()->Unit,
-    ){
-        Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = onclk){
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                }
-            },
-            modifier = Modifier.padding(bottom = 50.dp)
-        ) {
-                _ ->
-            LazyColumn(modifier = Modifier.fillMaxWidth()){
-                items(count = count){ Subscription() }
+){
+    val subscriptions by viewModel.subscriptionLiveData.observeAsState()
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = onclk){
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            }
+        },
+        modifier = Modifier.padding(bottom = 50.dp)
+    ) {
+            _ ->
+        LazyColumn(modifier = Modifier.fillMaxWidth()){
+            items(subscriptions?.data?: listOf()){ subs ->
+                SubscriptionCard(subsDesc = subs.subsdesc, subsTitle = subs.title, subsCategory = subs.category)
             }
         }
+    }
 }
 
-@Composable fun Subscription(){
+@Composable
+fun SubscriptionCard(
+    subsDesc: String = "Subs Text",
+    subsTitle: String = "Subs Title",
+    subsCategory : String = "Subs Category",
+){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
             .padding(15.dp)
             .clickable { },
         elevation = 10.dp
     ) {
-        Text(text = "subscription", fontSize = 50.sp)
+        Column(
+
+        ){
+            Text(text = subsTitle, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
+            Text(text = subsCategory, fontSize = 15.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.padding(start = 10.dp))
+            Text(text = subsDesc, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+        }
     }
 }
 
 @Composable
 fun ProfileSection(
     user: String,
+    profilePic:String = "",
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -188,31 +279,35 @@ fun ProfileSection(
             .padding(top = 10.dp)
             .fillMaxWidth()
     ) {
-        RoundImage(
-            image = painterResource(id = AppImages.baseline_person_24),
-            modifier = Modifier.size(100.dp)
+        if(profilePic=="") Icon(
+            painter = rememberVectorPainter(image = Icons.Default.Person),
+            contentDescription = "User Image",
+            modifier = Modifier
+                .size(100.dp)
+                .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                .border(
+                    width = 1.dp,
+                    color = Color.LightGray,
+                    shape = CircleShape
+                )
+                .padding(3.dp)
+                .clip(CircleShape)
+        )
+        else AsyncImage(
+            model = Constants.BASE_URL + profilePic,
+            contentDescription = null,
+            modifier = Modifier
+                .size(100.dp)
+                .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                .border(
+                    width = 1.dp,
+                    color = Color.LightGray,
+                    shape = CircleShape
+                )
+                .padding(3.dp)
+                .clip(CircleShape)
         )
         Spacer(modifier = Modifier.height(15.dp))
         Text(text = user)
     }
-}
-
-@Composable
-fun RoundImage(
-    image: Painter,
-    modifier: Modifier = Modifier
-) {
-    Image(
-        painter = image,
-        contentDescription = null,
-        modifier = modifier
-            .aspectRatio(1f, matchHeightConstraintsFirst = true)
-            .border(
-                width = 1.dp,
-                color = Color.LightGray,
-                shape = CircleShape
-            )
-            .padding(3.dp)
-            .clip(CircleShape)
-    )
 }

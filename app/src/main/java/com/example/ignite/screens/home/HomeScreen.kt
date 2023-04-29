@@ -37,7 +37,7 @@ fun HomeScreen(
     val exercises by viewModel.exercisesResponseLiveData.observeAsState()
     Scaffold (
         scaffoldState = scaffoldState,
-        bottomBar = {MyBottomBar(appState = appState,0)},
+        bottomBar = {MyBottomBar(appState = appState,0,user.value.isAnonymous)},
         topBar = { MyTopBar() }
     ) { _ ->
         LazyColumn(

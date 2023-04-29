@@ -41,6 +41,9 @@ class HomeViewModel @Inject constructor(
             if (accountService.hasUser)
             else accountService.createAnonymousAccount()
             getExercises()
+            accountService.currentUser.collect{
+                userRepository.signup(it)
+            }
         }
     }
 }
