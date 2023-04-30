@@ -23,6 +23,10 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth) : A
     override val hasUser: Boolean
         get() = auth.currentUser != null
 
+    override var loggedIn: Boolean = false
+
+    override var firstLaunch: Boolean = false
+
     override val currentUser: Flow<User>
         get() = callbackFlow {
             val listener =
@@ -39,6 +43,7 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth) : A
         }
         auth.signOut()
         auth.signInWithEmailAndPassword(email, password).await()
+        loggedIn = true
     }
 
     override suspend fun sendRecoveryEmail(email: String) {

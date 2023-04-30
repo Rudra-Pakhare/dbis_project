@@ -44,7 +44,11 @@ class HomeViewModel @Inject constructor(
             else accountService.createAnonymousAccount()
             getExercises()
             accountService.currentUser.collect{
-                userRepository.signup(it)
+                if(!accountService.firstLaunch || accountService.loggedIn){
+                    accountService.firstLaunch = true
+                    accountService.loggedIn = false
+                    userRepository.signup(it)
+                }
                 if(!it.isAnonymous){
                     client.connectUser(
                         user = io.getstream.chat.android.client.models.User(

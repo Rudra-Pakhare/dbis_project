@@ -8,6 +8,8 @@ interface AccountService {
     val hasUser: Boolean
     val currentUserToken: String
     val currentUser: Flow<User>
+    var loggedIn: Boolean
+    var firstLaunch : Boolean
 
     suspend fun authenticate(email: String, password: String)
     suspend fun sendRecoveryEmail(email: String)
